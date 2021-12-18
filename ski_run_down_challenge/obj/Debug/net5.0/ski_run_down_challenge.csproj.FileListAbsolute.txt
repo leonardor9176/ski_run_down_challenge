@@ -1,0 +1,16 @@
+D:\Users\Leo\Programación\skirsesort.kitzbuehel\ski_run_down_challenge\bin\Debug\net5.0\ski_run_down_challenge.exe
+D:\Users\Leo\Programación\skirsesort.kitzbuehel\ski_run_down_challenge\bin\Debug\net5.0\ski_run_down_challenge.deps.json
+D:\Users\Leo\Programación\skirsesort.kitzbuehel\ski_run_down_challenge\bin\Debug\net5.0\ski_run_down_challenge.runtimeconfig.json
+D:\Users\Leo\Programación\skirsesort.kitzbuehel\ski_run_down_challenge\bin\Debug\net5.0\ski_run_down_challenge.runtimeconfig.dev.json
+D:\Users\Leo\Programación\skirsesort.kitzbuehel\ski_run_down_challenge\bin\Debug\net5.0\ski_run_down_challenge.dll
+D:\Users\Leo\Programación\skirsesort.kitzbuehel\ski_run_down_challenge\bin\Debug\net5.0\ref\ski_run_down_challenge.dll
+D:\Users\Leo\Programación\skirsesort.kitzbuehel\ski_run_down_challenge\bin\Debug\net5.0\ski_run_down_challenge.pdb
+D:\Users\Leo\Programación\skirsesort.kitzbuehel\ski_run_down_challenge\obj\Debug\net5.0\ski_run_down_challenge.csproj.AssemblyReference.cache
+D:\Users\Leo\Programación\skirsesort.kitzbuehel\ski_run_down_challenge\obj\Debug\net5.0\ski_run_down_challenge.GeneratedMSBuildEditorConfig.editorconfig
+D:\Users\Leo\Programación\skirsesort.kitzbuehel\ski_run_down_challenge\obj\Debug\net5.0\ski_run_down_challenge.AssemblyInfoInputs.cache
+D:\Users\Leo\Programación\skirsesort.kitzbuehel\ski_run_down_challenge\obj\Debug\net5.0\ski_run_down_challenge.AssemblyInfo.cs
+D:\Users\Leo\Programación\skirsesort.kitzbuehel\ski_run_down_challenge\obj\Debug\net5.0\ski_run_down_challenge.csproj.CoreCompileInputs.cache
+D:\Users\Leo\Programación\skirsesort.kitzbuehel\ski_run_down_challenge\obj\Debug\net5.0\ski_run_down_challenge.dll
+D:\Users\Leo\Programación\skirsesort.kitzbuehel\ski_run_down_challenge\obj\Debug\net5.0\ref\ski_run_down_challenge.dll
+D:\Users\Leo\Programación\skirsesort.kitzbuehel\ski_run_down_challenge\obj\Debug\net5.0\ski_run_down_challenge.pdb
+D:\Users\Leo\Programación\skirsesort.kitzbuehel\ski_run_down_challenge\obj\Debug\net5.0\ski_run_down_challenge.genruntimeconfig.cache
