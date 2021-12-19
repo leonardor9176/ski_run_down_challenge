@@ -8,8 +8,17 @@ namespace ski_run_down_challenge
     {
         static void Main(string[] args)
         {
-            string file = "../4x4.txt";
-            // string file = "../map.txt";
+            //Set test = false to see results for matrix 1000x100 in file map.txt
+            bool test = false;
+            string file;
+            if (test)
+            {
+                file = "../4x4.txt";
+            }
+            else
+            {
+                file = "../map.txt";
+            }
 
             Map myMap = new Map(file);
             // setFinishAtZero(true) allows to consider points with value = 0 as posible final points
@@ -63,7 +72,8 @@ namespace ski_run_down_challenge
                 Console.WriteLine();
             }
         }
-        static void showResults(Map myMap){
+        static void showResults(Map myMap)
+        {
             List<int> route;
             route = myMap.getRoute();
             int distance = route[0] - route[route.Count - 1];
