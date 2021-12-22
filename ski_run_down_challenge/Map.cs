@@ -9,13 +9,12 @@ namespace ski_run_down_challenge
     {
         private int n;
         private int m;
-        private List<int>[] adjacencyTable;
+        private List<int>[] adjacencyList;
         private int[] heights;
-        private List<int> finalPoints = new List<int>();
-        public bool finishAtZero = true; // Allows you to choose 0 as the possible value of the final height
-        private int[] totSteps;
-        private int[] previousPoint;
-        private List<int> topPoints = new List<int>();
+        // private List<int> finalPoints = new List<int>();
+        // private int[] totSteps;
+        // private int[] previousPoint;
+        // private List<int> topPoints = new List<int>();
         private List<int> finalRoute = new List<int>();
 
         public Map(string file)
@@ -26,10 +25,10 @@ namespace ski_run_down_challenge
 
             this.n = currentLine[0];
             this.m = currentLine[0];
-            this.adjacencyTable = new List<int>[n * m];
+            this.adjacencyList = new List<int>[n * m];
             this.heights = new int[n * m];
-            this.totSteps = new int[n * m];
-            this.previousPoint = new int[n * m];
+            // this.totSteps = new int[n * m];
+            // this.previousPoint = new int[n * m];
 
             int[] prevLine = new int[m];
             int[] nextLine = new int[m];
@@ -67,61 +66,46 @@ namespace ski_run_down_challenge
 
                 for (int i = 0; i < currentLine.Length; i++)
                 {
-                    this.adjacencyTable[(linesRead * this.n) + i] = new List<int>();
+                    this.adjacencyList[(linesRead * this.n) + i] = new List<int>();
                     this.heights[(linesRead * this.n) + i] = currentLine[i];
-                    if (linesRead == 0 || i == 0 || i == (currentLine.Length - 1) || linesRead == (this.n - 1))
-                    {
-                        if (currentLine[i] == 1)
-                        {
-                            finalPoints.Add((linesRead * this.n) + i);
-                        }
-                        if (this.finishAtZero)
-                        {
-                            if (currentLine[i] == 0)
-                            {
-                                finalPoints.Add((linesRead * this.n) + i);
-                            }
-                        }
-                    }
 
                     // Not for first line
                     if (linesRead > 0)
                     {
-                        if (currentLine[i] < prevLine[i])
+                        if (currentLine[i] > prevLine[i])
                         {
-                            this.adjacencyTable[(linesRead * this.n) + i].Add(((linesRead - 1) * this.n) + (i));
+                            this.adjacencyList[(linesRead * this.n) + i].Add(((linesRead - 1) * this.n) + (i));
                         }
                     }
 
                     // All the lines
                     if (i > 0)
                     {
-                        if (currentLine[i] < currentLine[i - 1])
+                        if (currentLine[i] > currentLine[i - 1])
                         {
-                            this.adjacencyTable[(linesRead * this.n) + i].Add((linesRead * this.n) + (i - 1));
+                            this.adjacencyList[(linesRead * this.n) + i].Add((linesRead * this.n) + (i - 1));
                         }
                     }
                     if (i < (currentLine.Length - 1))
                     {
-                        if (currentLine[i] < currentLine[i + 1])
+                        if (currentLine[i] > currentLine[i + 1])
                         {
-                            this.adjacencyTable[(linesRead * this.n) + i].Add((linesRead * this.n) + (i + 1));
+                            this.adjacencyList[(linesRead * this.n) + i].Add((linesRead * this.n) + (i + 1));
                         }
                     }
 
                     // Not for final line
                     if (linesRead < (this.n - 1))
                     {
-                        if (currentLine[i] < nextLine[i])
+                        if (currentLine[i] > nextLine[i])
                         {
-                            this.adjacencyTable[(linesRead * this.n) + i].Add(((linesRead + 1) * this.n) + (i));
+                            this.adjacencyList[(linesRead * this.n) + i].Add(((linesRead + 1) * this.n) + (i));
                         }
                     }
                 }
                 linesRead++;
             }
             read.Close();
-
             planRoute();
         }
 
@@ -136,81 +120,98 @@ namespace ski_run_down_challenge
             return lineInt;
         }
 
-        private void iterateAdjacents(List<int> initials, int[] totSteps, int[] previousPoint, List<int> topPoints, ref int maxSteps)
-        {
-            foreach (var node1 in initials)
-            {
-                if (totSteps[node1] == 0)
-                {
-                    totSteps[node1]++;
-                }
-
-                if (maxSteps < totSteps[node1])
-                {
-                    maxSteps = totSteps[node1];
-                    topPoints.Clear();
-                    topPoints.Add(node1);
-                }
-                else if (maxSteps == totSteps[node1])
-                {
-                    if (!topPoints.Contains(node1))
-                    {
-                        topPoints.Add(node1);
-                    }
-                }
-
-                if (this.adjacencyTable[node1].Count != 0)
-                {
-                    foreach (var node2 in this.adjacencyTable[node1])
-                    {
-                        if (totSteps[node2] < (totSteps[node1] + 1))
-                        {
-                            previousPoint[node2] = node1;
-                            totSteps[node2] = totSteps[node1] + 1;
-                        }
-                        iterateAdjacents(this.adjacencyTable[node1], this.totSteps, this.previousPoint, this.topPoints, ref maxSteps);
-                    }
-                }
-            }
-        }
         private void planRoute()
         {
-            int maxSteps = 0;
-            iterateAdjacents(this.finalPoints, this.totSteps, this.previousPoint, this.topPoints, ref maxSteps);
+            int[] totSteps = new int[n * m];
+            int[] previousNode = new int[n * m];
+            List<int> currentPath = new List<int>();
+            List<int>[] longestPaths = new List<int>[1];
+            longestPaths[0] = new List<int>();
 
-            createRoute();
-        }
-        private void createRoute()
-        {
-            List<int> route = new List<int>();
-            int next;
-            int bestDistance = 0;
-            for (int i = 0; i < this.topPoints.Count; i++)
+            Array.Fill<int>(previousNode, -1);
+
+            for (int i = 0; i < adjacencyList.Length; i++)
             {
-                next = this.previousPoint[this.topPoints[i]];
-                route.Add(this.topPoints[i]);
-                while (next != 0)
+                currentPath.Clear();
+                if (previousNode[i] == -1)
                 {
-                    route.Add(next);
-                    next = this.previousPoint[next];
+                    iterateAdjacents(i, ref totSteps, ref previousNode, ref currentPath, ref longestPaths);
                 }
-                if (bestDistance < (this.heights[route[0]] - this.heights[route[route.Count - 1]]))
+            }
+            Console.WriteLine("longest Paths");
+            foreach (var pathIter in longestPaths)
+            {
+                foreach (var item in pathIter)
                 {
-                    this.finalRoute.Clear();
-                    foreach (var item in route)
-                    {
-                        this.finalRoute.Add(item);
-                    }
-                    bestDistance = this.heights[route[0]] - this.heights[route[route.Count - 1]];
+                    Console.Write(item + " ");
                 }
-                route.Clear();
+                Console.WriteLine();
             }
         }
 
-        public void setFinishAtZero(bool finishAtZero)
+        private void iterateAdjacents(int node1, ref int[] totSteps, ref int[] previousNode, ref List<int> currentPath, ref List<int>[] longestPaths)
         {
-            this.finishAtZero = finishAtZero;
+            totSteps[node1]++;
+            currentPath.Add(node1);
+
+            if (this.adjacencyList[node1].Count != 0)
+            {
+                foreach (var node2 in this.adjacencyList[node1])
+                {
+                    if (previousNode[node2] == -1)
+                    {
+                        previousNode[node2] = node1;
+                        totSteps[node2] = totSteps[node1];
+                        iterateAdjacents(node2, ref totSteps, ref previousNode, ref currentPath, ref longestPaths);
+                    }
+                    else if (totSteps[node2] < (totSteps[node1] + 1))
+                    {
+                        previousNode[node2] = node1;
+                        totSteps[node2] = totSteps[node1];
+                        iterateAdjacents(node2, ref totSteps, ref previousNode, ref currentPath, ref longestPaths);
+
+                    }
+                    else if (totSteps[node2] == (totSteps[node1] + 1))
+                    {
+                        if (this.heights[previousNode[node2]] <= this.heights[node1])
+                        {
+                            previousNode[node2] = node1;
+                            totSteps[node2] = totSteps[node1];
+                            iterateAdjacents(node2, ref totSteps, ref previousNode, ref currentPath, ref longestPaths);
+                        }
+                    }
+                }
+            }
+
+            if (longestPaths[0].Count < currentPath.Count)
+            {
+                Array.Clear(longestPaths, 0, longestPaths.Length);
+                Array.Resize(ref longestPaths, 1);
+                longestPaths[0] = new List<int>();
+                longestPaths[0].AddRange(currentPath);
+            }
+            else if (longestPaths[0].Count == currentPath.Count)
+            {
+                int downhillCurrent = this.heights[currentPath[0]] - this.heights[currentPath[currentPath.Count - 1]];
+                int downhillLonguest = this.heights[longestPaths[0][0]] - this.heights[longestPaths[0][longestPaths[0].Count - 1]];
+
+                if (downhillCurrent == downhillLonguest)
+                {
+                    Array.Resize(ref longestPaths, longestPaths.Length + 1);
+                    longestPaths[longestPaths.Length - 1] = new List<int>();
+                    longestPaths[longestPaths.Length - 1].AddRange(currentPath);
+                }
+                if (downhillCurrent > downhillLonguest)
+                {
+                    Array.Clear(longestPaths, 0, longestPaths.Length);
+                    Array.Resize(ref longestPaths, 1);
+                    longestPaths[0] = new List<int>();
+                    longestPaths[0].AddRange(currentPath);
+                }
+            }
+            currentPath.RemoveAt(currentPath.Count - 1);
         }
+
         public int[] getDimentions()
         {
             int[] dimentions = { this.n, this.m };
@@ -230,17 +231,17 @@ namespace ski_run_down_challenge
         }
         public List<int>[] getAdjacencyTable()
         {
-            return this.adjacencyTable;
+            return this.adjacencyList;
         }
-        public List<int> getRoute()
-        {
-            List<int> route = new List<int>();
-            for (int i = 0; i < this.finalRoute.Count; i++)
-            {
-                route.Add(this.heights[this.finalRoute[i]]);
-            }
+        // public List<int> getRoute()
+        // {
+        //     List<int> route = new List<int>();
+        //     for (int i = 0; i < this.finalRoute.Count; i++)
+        //     {
+        //         route.Add(this.heights[this.finalRoute[i]]);
+        //     }
 
-            return route;
-        }
+        //     return route;
+        // }
     }
 }
