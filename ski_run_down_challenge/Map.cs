@@ -15,7 +15,7 @@ namespace ski_run_down_challenge
         // private int[] totSteps;
         // private int[] previousPoint;
         // private List<int> topPoints = new List<int>();
-        private List<int> finalRoute = new List<int>();
+        List<int>[] longestPaths = new List<int>[1];
 
         public Map(string file)
         {
@@ -125,8 +125,7 @@ namespace ski_run_down_challenge
             int[] totSteps = new int[n * m];
             int[] previousNode = new int[n * m];
             List<int> currentPath = new List<int>();
-            List<int>[] longestPaths = new List<int>[1];
-            longestPaths[0] = new List<int>();
+            this.longestPaths[0] = new List<int>();
 
             Array.Fill<int>(previousNode, -1);
 
@@ -135,21 +134,12 @@ namespace ski_run_down_challenge
                 currentPath.Clear();
                 if (previousNode[i] == -1)
                 {
-                    iterateAdjacents(i, ref totSteps, ref previousNode, ref currentPath, ref longestPaths);
+                    iterateAdjacents(i, ref totSteps, ref previousNode, ref currentPath);
                 }
-            }
-            Console.WriteLine("longest Paths");
-            foreach (var pathIter in longestPaths)
-            {
-                foreach (var item in pathIter)
-                {
-                    Console.Write(item + " ");
-                }
-                Console.WriteLine();
             }
         }
 
-        private void iterateAdjacents(int node1, ref int[] totSteps, ref int[] previousNode, ref List<int> currentPath, ref List<int>[] longestPaths)
+        private void iterateAdjacents(int node1, ref int[] totSteps, ref int[] previousNode, ref List<int> currentPath)
         {
             totSteps[node1]++;
             currentPath.Add(node1);
@@ -162,13 +152,13 @@ namespace ski_run_down_challenge
                     {
                         previousNode[node2] = node1;
                         totSteps[node2] = totSteps[node1];
-                        iterateAdjacents(node2, ref totSteps, ref previousNode, ref currentPath, ref longestPaths);
+                        iterateAdjacents(node2, ref totSteps, ref previousNode, ref currentPath);
                     }
                     else if (totSteps[node2] < (totSteps[node1] + 1))
                     {
                         previousNode[node2] = node1;
                         totSteps[node2] = totSteps[node1];
-                        iterateAdjacents(node2, ref totSteps, ref previousNode, ref currentPath, ref longestPaths);
+                        iterateAdjacents(node2, ref totSteps, ref previousNode, ref currentPath);
 
                     }
                     else if (totSteps[node2] == (totSteps[node1] + 1))
@@ -177,36 +167,36 @@ namespace ski_run_down_challenge
                         {
                             previousNode[node2] = node1;
                             totSteps[node2] = totSteps[node1];
-                            iterateAdjacents(node2, ref totSteps, ref previousNode, ref currentPath, ref longestPaths);
+                            iterateAdjacents(node2, ref totSteps, ref previousNode, ref currentPath);
                         }
                     }
                 }
             }
 
-            if (longestPaths[0].Count < currentPath.Count)
+            if (this.longestPaths[0].Count < currentPath.Count)
             {
-                Array.Clear(longestPaths, 0, longestPaths.Length);
-                Array.Resize(ref longestPaths, 1);
-                longestPaths[0] = new List<int>();
-                longestPaths[0].AddRange(currentPath);
+                Array.Clear(this.longestPaths, 0, this.longestPaths.Length);
+                Array.Resize(ref this.longestPaths, 1);
+                this.longestPaths[0] = new List<int>();
+                this.longestPaths[0].AddRange(currentPath);
             }
-            else if (longestPaths[0].Count == currentPath.Count)
+            else if (this.longestPaths[0].Count == currentPath.Count)
             {
                 int downhillCurrent = this.heights[currentPath[0]] - this.heights[currentPath[currentPath.Count - 1]];
-                int downhillLonguest = this.heights[longestPaths[0][0]] - this.heights[longestPaths[0][longestPaths[0].Count - 1]];
+                int downhillLonguest = this.heights[this.longestPaths[0][0]] - this.heights[this.longestPaths[0][this.longestPaths[0].Count - 1]];
 
                 if (downhillCurrent == downhillLonguest)
                 {
-                    Array.Resize(ref longestPaths, longestPaths.Length + 1);
-                    longestPaths[longestPaths.Length - 1] = new List<int>();
-                    longestPaths[longestPaths.Length - 1].AddRange(currentPath);
+                    Array.Resize(ref this.longestPaths, this.longestPaths.Length + 1);
+                    this.longestPaths[this.longestPaths.Length - 1] = new List<int>();
+                    this.longestPaths[this.longestPaths.Length - 1].AddRange(currentPath);
                 }
                 if (downhillCurrent > downhillLonguest)
                 {
-                    Array.Clear(longestPaths, 0, longestPaths.Length);
-                    Array.Resize(ref longestPaths, 1);
-                    longestPaths[0] = new List<int>();
-                    longestPaths[0].AddRange(currentPath);
+                    Array.Clear(this.longestPaths, 0, this.longestPaths.Length);
+                    Array.Resize(ref this.longestPaths, 1);
+                    this.longestPaths[0] = new List<int>();
+                    this.longestPaths[0].AddRange(currentPath);
                 }
             }
             currentPath.RemoveAt(currentPath.Count - 1);
@@ -233,15 +223,19 @@ namespace ski_run_down_challenge
         {
             return this.adjacencyList;
         }
-        // public List<int> getRoute()
-        // {
-        //     List<int> route = new List<int>();
-        //     for (int i = 0; i < this.finalRoute.Count; i++)
-        //     {
-        //         route.Add(this.heights[this.finalRoute[i]]);
-        //     }
+        public List<int>[] getRoute()
+        {
+            List<int>[] routes = new List<int>[this.longestPaths.Length];
 
-        //     return route;
-        // }
+            for (int i = 0; i < this.longestPaths.Length; i++)
+            {
+                routes[i] = new List<int>();
+                for (int j = 0; j < this.longestPaths[i].Count; j++)
+                {
+                    routes[i].Add(this.heights[this.longestPaths[i][j]]);
+                }
+            }
+            return routes;
+        }
     }
 }

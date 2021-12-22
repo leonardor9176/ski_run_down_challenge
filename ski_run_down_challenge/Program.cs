@@ -21,10 +21,9 @@ namespace ski_run_down_challenge
             }
 
             Map myMap = new Map(file);
-            // setFinishAtZero(true) allows to consider points with value = 0 as posible final points
 
             //Show Dimentions
-            // showDimentions(myMap);
+            showDimentions(myMap);
 
             //Show map
             // ShowMap(myMap);
@@ -33,11 +32,12 @@ namespace ski_run_down_challenge
             // showAdjacencyTable(myMap);
 
             //Route
-            // showResults(myMap);
+            showResults(myMap);
 
         }
         static void showDimentions(Map myMap)
         {
+            Console.WriteLine();
             Console.WriteLine("Dimentions");
             Console.WriteLine("[{0}]", string.Join(", ", myMap.getDimentions()));
         }
@@ -71,20 +71,28 @@ namespace ski_run_down_challenge
                 Console.WriteLine();
             }
         }
-        // static void showResults(Map myMap)
-        // {
-        //     List<int> route;
-        //     route = myMap.getRoute();
-        //     int distance = route[0] - route[route.Count - 1];
-        //     Console.WriteLine("TopPnt\tBotPnt\tDist\tRoute");
-        //     Console.Write(route[0] + "\t");
-        //     Console.Write(route[route.Count - 1] + "\t");
-        //     Console.Write(distance + "\t");
-        //     foreach (var item in route)
-        //     {
-        //         Console.Write(item + " ");
-        //     }
-        //     Console.WriteLine();
-        // }
+        static void showResults(Map myMap)
+        {
+            List<int>[] routes;
+            routes = myMap.getRoute();
+
+            Console.WriteLine();
+            Console.WriteLine("TopPnt\tBotPnt\tSteps\tDist\tRoute");
+            foreach (var path in routes)
+            {
+                int distance = path[0] - path[path.Count - 1];
+
+                Console.Write(path[0] + "\t");
+                Console.Write(path[path.Count - 1] + "\t");
+                Console.Write(path.Count + "\t");
+                Console.Write(distance + "\t");
+
+                foreach (var item in path)
+                {
+                    Console.Write(item + " ");
+                }
+                Console.WriteLine();
+            }
+        }
     }
 }
